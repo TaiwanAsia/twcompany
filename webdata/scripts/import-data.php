@@ -5,8 +5,12 @@ $db = Unit::getDb();
 $table = Unit::getTable();
 
 error_log("import index.csv.gz");
-$fp = gzopen("http://ronnywang-twcompany.s3-website-ap-northeast-1.amazonaws.com/index.csv.gz", "r");
-fgetcsv($fp);
+
+//$fp = gzopen("http://ronnywang-twcompany.s3-website-ap-northeast-1.amazonaws.com/index.csv.gz", "r");
+//fgetcsv($fp);
+
+$fp = fopen("D:/MAMP/htdocs/twcompany/webdata/index.csv", "r");
+
 $map = array('公司' => 1, '商業登記' => 2, '分公司' => 3, '教育部' => 4, '其他' => 99);
 $terms = array();
 $c = 0;
