@@ -27,7 +27,7 @@
 <ol>
     <?php foreach (json_decode($this->value) as $row) { ?>
     <li value="<?= $this->escape($row->{'序號'}) ?>">
-    姓名: 
+    姓名:
     <a href="/name/<?= urlencode($row->{'姓名'}) ?>"><?= $this->escape($row->{'姓名'}) ?></a>
     , 到職日期:
     <?= $this->escape(json_encode($row->{'到職日期'}, JSON_UNESCAPED_UNICODE)) ?>
@@ -40,12 +40,29 @@
 <?php } else { ?>
 <?= $this->escape(json_decode($this->value)) ?>
 <?php } ?>
-<?php } elseif ('[' == $this->value[0]) { // array ?>
-<ul>
-    <?php foreach (json_decode($this->value) as $row) { ?>
-    <li><?= $this->escape(json_encode($row,  JSON_UNESCAPED_UNICODE)) ?></li>
-    <?php } ?>
-</ul>
+    <!--  資料格式為json，但不是董監事名單  -->
+    <?php } elseif ('[' == $this->value[0] and !in_array($this->column_id, [19,20])) { // array ?>
+        <ul>
+            <?php foreach (json_decode($this->value) as $row) { ?>
+            <li><?= $this->escape(json_encode($row,  JSON_UNESCAPED_UNICODE)) ?></li>
+            <?php } ?>
+        </ul>
+    <!--  資料格式為json，且是經理人名單  -->
+    <?php } elseif ('[' == $this->value[0] and $this->column_id == 20) { // array ?>
+    <ul>
+        <?php foreach (json_decode($this->value) as $row) { ?>
+        <li><?php echo ltrim($row->序號,"0").".姓名:";?> <a href="/name/<?= $row->姓名 ?>"><?= $row->姓名 ?></a> <?="﹐到職日期:".json_encode($row->到職日期);  ?></li>
+        <!--  <li>--><?//= $this->escape(json_encode($row,  JSON_UNESCAPED_UNICODE)) ?><!--</li>-->
+        <?php } ?>
+    </ul>
+    <!--  資料格式為json，且是董監事名單  -->
+    <?php } elseif ('[' == $this->value[0] and $this->column_id == 19) { // array ?>
+    <ul>
+        <?php foreach (json_decode($this->value) as $row) { ?>
+            <li><?php echo ltrim($row->序號,"0").".姓名:";?> <a href="/name/<?= $row->姓名 ?>"><?= $row->姓名 ?></a> <?="﹐持有股份數:".trim(json_encode($row->出資額),'"');  ?></li>
+            <!--  <li>--><?//= $this->escape(json_encode($row,  JSON_UNESCAPED_UNICODE)) ?><!--</li>-->
+        <?php } ?>
+    </ul>
 <?php } elseif ('"' == $this->value[0]) { ?>
 <?= $this->escape(json_decode($this->value)) ?>
 <?php } else { ?>
